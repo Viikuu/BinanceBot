@@ -1,3 +1,4 @@
+import { analizeTrades } from '../binance';
 const getMock = jest.fn();
 
 jest.mock('axios', () => {
@@ -106,9 +107,138 @@ describe('trades module', () => {
   });
 
   describe('analizeTrades function', () => {
-    test('should analyze trades correctly', () => {
-      // This is a placeholder for an actual test.
-      // You would typically provide sample trade data and check the analysis result.
+    test('should analyze trades correctly', async () => {
+      const { analizeTrades } = await loadModule();
+
+      const trades = [{
+        "id": 1,
+        "price": 10,
+        "quantity": 1,
+        "firstTradeId": 1,
+        "lastTradeId": 1,
+        "timestamp": 1755772660000,
+        "isBuyerMaker": false,
+        "isBestMatch": true
+      },
+      {
+        "id": 2,
+        "price": 9,
+        "quantity": 1,
+        "firstTradeId": 5175993286,
+        "lastTradeId": 5175993286,
+        "timestamp": 1755772660200,
+        "isBuyerMaker": false,
+        "isBestMatch": true
+      },
+      {
+        "id": 3,
+        "price": 11,
+        "quantity": 1,
+        "firstTradeId": 5175993287,
+        "lastTradeId": 5175993287,
+        "timestamp": 1755772660263,
+        "isBuyerMaker": true,
+        "isBestMatch": true
+      }
+      ];
+
+      const out = analizeTrades(trades);
+
+      expect(out).toEqual({
+        startTimeStamp: 1755772660000,
+        endTimeTimestamp: 1755772660263,
+        totalTrades: 3,
+        minValueTrade: {
+          id: 2,
+          price: 9,
+          quantity: 1,
+          firstTradeId: 5175993286,
+          lastTradeId: 5175993286,
+          timestamp: 1755772660200,
+          isBuyerMaker: false,
+          isBestMatch: true
+        },
+        maxValueTrade: {
+          id: 3,
+          price: 11,
+          quantity: 1,
+          firstTradeId: 5175993287,
+          lastTradeId: 5175993287,
+          timestamp: 1755772660263,
+          isBuyerMaker: true,
+          isBestMatch: true
+        },
+        changes: [{
+          startIndex: 1,
+          endIndex: 2,
+          direction: "decreasing",
+          length: 2,
+          startPrice: 10,
+          endPrice: 9,
+          priceChange: "-1",
+          priceChangePercent: `${-1 / 10 * 100}`,
+          trades: [
+            {
+              "id": 1,
+              "price": 10,
+              "quantity": 1,
+              "firstTradeId": 1,
+              "lastTradeId": 1,
+              "timestamp": 1755772660000,
+              "isBuyerMaker": false,
+              "isBestMatch": true
+            },
+            {
+              "id": 2,
+              "price": 9,
+              "quantity": 1,
+              "firstTradeId": 5175993286,
+              "lastTradeId": 5175993286,
+              "timestamp": 1755772660200,
+              "isBuyerMaker": false,
+              "isBestMatch": true
+            },
+          ]
+        },
+        {
+          startIndex: 2,
+          endIndex: 3,
+          direction: "increasing",
+          length: 2,
+          startPrice: 9,
+          endPrice: 11,
+          priceChange: "2",
+          priceChangePercent: `${2 / 9 * 100}`,
+          trades: [
+            {
+              "id": 2,
+              "price": 9,
+              "quantity": 1,
+              "firstTradeId": 5175993286,
+              "lastTradeId": 5175993286,
+              "timestamp": 1755772660200,
+              "isBuyerMaker": false,
+              "isBestMatch": true
+            },
+            {
+              "id": 3,
+              "price": 11,
+              "quantity": 1,
+              "firstTradeId": 5175993287,
+              "lastTradeId": 5175993287,
+              "timestamp": 1755772660263,
+              "isBuyerMaker": true,
+              "isBestMatch": true
+            }
+          ]
+        },
+        ]
+
+      });
+    });
+
+    test('dummy test', () => {
+
       expect(true).toBe(true);
     });
   });
