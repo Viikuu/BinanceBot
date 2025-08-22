@@ -1,20 +1,14 @@
 import 'dotenv/config';
 import express from 'express';
-import mongoose from 'mongoose';
 import { env } from './config';
-import { error } from 'console';
+import TradesRouter from './routes/trades';
 
 async function main() {
   const app = express();
 
   app.use(express.json());
-  try {
-    await mongoose.connect(env.MONGODB_URI);
-    console.log('Connected to MongoDB');
-  } catch (error) {
-    console.error('Failed to connect to MongoDB', error);
-    process.exit(1);
-  }
+
+  app.use('/trades', TradesRouter);
 
   app.get('/', (req, res) => {
     res.send('Hello World!');
