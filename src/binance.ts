@@ -1,5 +1,6 @@
 import axios from "axios";
-import { env } from "process";
+import { env } from "./config";
+import { DateTime } from "luxon";
 
 
 const api = axios.create({
@@ -7,19 +8,19 @@ const api = axios.create({
   timeout: 10000,
 });
 
-export const fetchTrades = async (symbol: string, startTimeISO: string, endTimeISO: string) => {
+export const fetchTrades = async (symbol: string, startTime: number, endTime: number) => {
   try {
     const parsedSymbol = symbol.toUpperCase();
     const { data } = await api.get('/api/v3/aggTrades', {
       params: {
         symbol: parsedSymbol,
-        startTime: new Date(startTimeISO).getTime(),
-        endTime: new Date(endTimeISO).getTime(),
+        startTime,
+        endTime,
         limit: 1000,
       }
     });
 
-    console.log(`Fetched ${data.length} trades for ${parsedSymbol} from ${startTimeISO} to ${endTimeISO}, data:`, data);
+    console.log(`Fetched ${data.length} trades for ${parsedSymbol} from ${DateTime.fromMillis(startTime).toISODate} to ${DateTime.fromMillis(endTime).toISODate()}, data:`, data);
 
     return data;
 
