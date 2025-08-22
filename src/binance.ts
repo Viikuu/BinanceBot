@@ -1,6 +1,7 @@
 import axios from "axios";
 import { env } from "./config";
-import { FetchedTrade, ParsedTrade } from "./types/binance.types";
+import { FetchedTrade, ParsedTrade, TrendDirection } from "./types/binance.types";
+import Decimal from "decimal.js";
 
 const api = axios.create({
   baseURL: env.BINANCE_API_URL,
@@ -43,23 +44,7 @@ const sortTradesByTimestamp = (trades: ParsedTrade[]): ParsedTrade[] => {
   return trades.sort((a, b) => a.timestamp - b.timestamp);
 }
 
-const findMinAndMaxTradeValues = (trades: ParsedTrade[]): { minTradeId: number; maxTradeId: number } | null => {
-  if (trades.length === 0) return null;
-
-  let minTradeId = trades[0].id;
-  let maxTradeId = trades[0].id;
-
-  for (const trade of trades) {
-    if (trade.id < minTradeId) minTradeId = trade.id;
-    if (trade.id > maxTradeId) maxTradeId = trade.id;
-  }
-
-  return { minTradeId, maxTradeId };
-}
-
-type TrendDirection = 'increasing' | 'decreasing' | null;
-
-const analizeTrades = (trades: ParsedTrade[]) => {
+export const analizeTrades = (trades: ParsedTrade[]) => {
   const sortedTrades = sortTradesByTimestamp(trades);
   let minValueTrade = trades[0];
   let maxValueTrade = trades[0];
@@ -81,8 +66,8 @@ const analizeTrades = (trades: ParsedTrade[]) => {
           length: currentTrend.length,
           startPrice: currentTrend[0].price,
           endPrice: currentTrend[currentTrend.length - 1].price,
-          priceChange: currentTrend[currentTrend.length - 1].price - currentTrend[0].price,
-          priceChangePercent: ((currentTrend[currentTrend.length - 1].price - currentTrend[0].price) / currentTrend[0].price) * 100,
+          priceChange: (new Decimal(currentTrend[currentTrend.length - 1].price)).minus(new Decimal(currentTrend[0].price)),
+          priceChangePercent: (new Decimal(currentTrend[currentTrend.length - 1].price)).minus(new Decimal(currentTrend[0].price)).dividedBy(new Decimal(currentTrend[0].price)).mul(100),
           trades: currentTrend,
         });
         currentTrend = [];
@@ -99,8 +84,8 @@ const analizeTrades = (trades: ParsedTrade[]) => {
           length: currentTrend.length,
           startPrice: currentTrend[0].price,
           endPrice: currentTrend[currentTrend.length - 1].price,
-          priceChange: currentTrend[currentTrend.length - 1].price - currentTrend[0].price,
-          priceChangePercent: ((currentTrend[currentTrend.length - 1].price - currentTrend[0].price) / currentTrend[0].price) * 100,
+          priceChange: (new Decimal(currentTrend[currentTrend.length - 1].price)).minus(new Decimal(currentTrend[0].price)),
+          priceChangePercent: (new Decimal(currentTrend[currentTrend.length - 1].price)).minus(new Decimal(currentTrend[0].price)).dividedBy(new Decimal(currentTrend[0].price)).mul(100),
           trades: currentTrend,
         });
         currentTrend = [];
@@ -122,8 +107,8 @@ const analizeTrades = (trades: ParsedTrade[]) => {
       length: currentTrend.length,
       startPrice: currentTrend[0].price,
       endPrice: currentTrend[currentTrend.length - 1].price,
-      priceChange: currentTrend[currentTrend.length - 1].price - currentTrend[0].price,
-      priceChangePercent: ((currentTrend[currentTrend.length - 1].price - currentTrend[0].price) / currentTrend[0].price) * 100,
+      priceChange: (new Decimal(currentTrend[currentTrend.length - 1].price)).minus(new Decimal(currentTrend[0].price)),
+      priceChangePercent: (new Decimal(currentTrend[currentTrend.length - 1].price)).minus(new Decimal(currentTrend[0].price)).dividedBy(new Decimal(currentTrend[0].price)).mul(100),
       trades: currentTrend,
     });
   }
@@ -131,15 +116,12 @@ const analizeTrades = (trades: ParsedTrade[]) => {
   let startTimeStamp = trades[0].timestamp;
   let endTimeTimestamp = trades[trades.length - 1].timestamp;
 
-  const minAndMaxTradeIds = findMinAndMaxTradeValues(trades);
-
   return {
     startTimeStamp,
     endTimeTimestamp,
     totalTrades: trades.length,
     minValueTrade,
     maxValueTrade,
-    minAndMaxTradeIds,
     changes,
   }
 }

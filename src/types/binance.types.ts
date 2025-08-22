@@ -19,3 +19,5 @@ export type ParsedTrade = {
   isBuyerMaker: boolean;
   isBestMatch: boolean;
 }
+
+export type TrendDirection = 'increasing' | 'decreasing' | null;
