@@ -1,4 +1,3 @@
-import { analizeTrades } from '../binance';
 const getMock = jest.fn();
 
 jest.mock('axios', () => {
@@ -208,7 +207,7 @@ describe('trades module', () => {
           startPrice: 9,
           endPrice: 11,
           priceChange: "2",
-          priceChangePercent: `${2 / 9 * 100}`,
+          priceChangePercent: "22.222222222222222222",
           trades: [
             {
               "id": 2,
@@ -235,11 +234,6 @@ describe('trades module', () => {
         ]
 
       });
-    });
-
-    test('dummy test', () => {
-
-      expect(true).toBe(true);
     });
   });
 })

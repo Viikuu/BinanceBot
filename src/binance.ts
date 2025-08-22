@@ -65,11 +65,11 @@ export const analizeTrades = (trades: ParsedTrade[]) => {
           length: currentTrend.length,
           startPrice: currentTrend[0].price,
           endPrice: currentTrend[currentTrend.length - 1].price,
-          priceChange: (new Decimal(currentTrend[currentTrend.length - 1].price)).minus(new Decimal(currentTrend[0].price)),
-          priceChangePercent: (new Decimal(currentTrend[currentTrend.length - 1].price)).minus(new Decimal(currentTrend[0].price)).dividedBy(new Decimal(currentTrend[0].price)).mul(100),
+          priceChange: (new Decimal(currentTrend[currentTrend.length - 1].price)).minus(new Decimal(currentTrend[0].price)).toString(),
+          priceChangePercent: (new Decimal(currentTrend[currentTrend.length - 1].price)).minus(new Decimal(currentTrend[0].price)).dividedBy(new Decimal(currentTrend[0].price)).mul(100).toString(),
           trades: currentTrend,
         });
-        currentTrend = [];
+        currentTrend = [lastTrade];
       }
       trend = 'increasing';
       currentTrend.push(trade);
@@ -83,11 +83,11 @@ export const analizeTrades = (trades: ParsedTrade[]) => {
           length: currentTrend.length,
           startPrice: currentTrend[0].price,
           endPrice: currentTrend[currentTrend.length - 1].price,
-          priceChange: (new Decimal(currentTrend[currentTrend.length - 1].price)).minus(new Decimal(currentTrend[0].price)),
-          priceChangePercent: (new Decimal(currentTrend[currentTrend.length - 1].price)).minus(new Decimal(currentTrend[0].price)).dividedBy(new Decimal(currentTrend[0].price)).mul(100),
+          priceChange: (new Decimal(currentTrend[currentTrend.length - 1].price)).minus(new Decimal(currentTrend[0].price)).toString(),
+          priceChangePercent: (new Decimal(currentTrend[currentTrend.length - 1].price)).minus(new Decimal(currentTrend[0].price)).dividedBy(new Decimal(currentTrend[0].price)).mul(100).toString(),
           trades: currentTrend,
         });
-        currentTrend = [];
+        currentTrend = [lastTrade];
       }
       trend = 'decreasing';
       currentTrend.push(trade);
@@ -106,8 +106,8 @@ export const analizeTrades = (trades: ParsedTrade[]) => {
       length: currentTrend.length,
       startPrice: currentTrend[0].price,
       endPrice: currentTrend[currentTrend.length - 1].price,
-      priceChange: (new Decimal(currentTrend[currentTrend.length - 1].price)).minus(new Decimal(currentTrend[0].price)),
-      priceChangePercent: (new Decimal(currentTrend[currentTrend.length - 1].price)).minus(new Decimal(currentTrend[0].price)).dividedBy(new Decimal(currentTrend[0].price)).mul(100),
+      priceChange: (new Decimal(currentTrend[currentTrend.length - 1].price)).minus(new Decimal(currentTrend[0].price)).toString(),
+      priceChangePercent: (new Decimal(currentTrend[currentTrend.length - 1].price)).minus(new Decimal(currentTrend[0].price)).dividedBy(new Decimal(currentTrend[0].price)).mul(100).toString(),
       trades: currentTrend,
     });
   }
