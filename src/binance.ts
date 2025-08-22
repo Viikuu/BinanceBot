@@ -22,8 +22,7 @@ export const fetchTrades = async (symbol: string, startTime: number, endTime: nu
 
     return parseFetchedTrades(data);
   } catch (error) {
-    console.error('Error fetching trades from Binance:', error);
-    throw error;
+    throw new Error(`Error fetching trades from Binance`);
   }
 }
 
