@@ -12,6 +12,7 @@ TradesRouter.get('/fetch-trades', async (req, res) => {
   }
   const startTimeIso = DateTime.fromISO(startTime);
   const endTimeIso = DateTime.fromISO(endTime);
+  
   if (!startTimeIso.isValid || !endTimeIso.isValid) {
     return res.status(400).json({ error: 'Invalid date format. Use ISO 8601 format.' });
   }
